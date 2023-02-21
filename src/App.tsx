@@ -1,6 +1,11 @@
 import { useState } from "react";
 import "./App.css";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+
+import DropDownComponent from "./components/DropDownComponent";
+
 const apiKey = import.meta.env.VITE_OPEN_WEATHER_KEY;
 
 interface CityCoordinates {
@@ -9,6 +14,8 @@ interface CityCoordinates {
 }
 
 function App() {
+  const [dropDownClicked, setDropDownClicked] = useState<boolean>(false);
+  const [cityName, setCityName] = useState<string>("");
   const [cityCoordinates, setCityCoordinates] = useState<CityCoordinates>();
   const [cityWeatherTemperature, setCityWeatherTemperature] = useState<any>({
     main: {},
@@ -21,14 +28,16 @@ function App() {
       },
     ]);
 
-  const getCoordinatesOfTheCityFromAPI = async (): Promise<void> => {
+  const getCoordinatesOfTheCityFromAPI = async (
+    city: string
+  ): Promise<void> => {
     const response = await (
       await fetch(
-        `http://api.openweathermap.org/geo/1.0/direct?q=Tbilisi&limit=5&appid=${apiKey}`
+        `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${apiKey}`
       )
     ).json();
 
-    const { lat, lon } = response[1];
+    const { lat, lon } = response[0];
 
     setCityCoordinates({ lat, lon });
   };
@@ -36,7 +45,7 @@ function App() {
   const getCityWeatherTemperatureFromAPI = async (): Promise<void> => {
     const response = await (
       await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${cityCoordinates?.lat}&lon=${cityCoordinates?.lon}&appid=${apiKey}`
+        `https://api.openweathermap.org/data/2.5/weather?lat=${cityCoordinates?.lat}&lon=${cityCoordinates?.lon}&appid=${apiKey}&units=metric`
       )
     ).json();
 
@@ -53,38 +62,58 @@ function App() {
     setCityWeatherGeneralInformation(response.weather[0]);
   };
 
-  console.log(cityCoordinates);
-  console.log(cityWeatherTemperature);
+  const handleDropDownClick = () => {
+    dropDownClicked ? setDropDownClicked(false) : setDropDownClicked(true);
+  };
+
+  const handleCityNameChange = (city: string) => {
+    setCityName(city);
+  };
+
+  console.log(cityName);
 
   return (
-    <>
-      <h1 className="text-3xl font-bold underline text-center mb-4">
-        Hello world!
-      </h1>
-      <div className="grid grid-cols-3 gap-4 justify-items-center">
-        <button
-          className="border-2 rounded-md border-black bg-white text-center text-base text-black shadow-md w-48 hover:bg-sky-700"
-          onClick={getCoordinatesOfTheCityFromAPI}
-        >
-          Get Coordinates!
-        </button>
-        <button
-          className="border-2 rounded-md border-black bg-white text-center text-base text-black shadow-md w-48 hover:bg-sky-700"
-          onClick={getCityWeatherTemperatureFromAPI}
-        >
-          Get Weather Temperature!
-        </button>
-        <button
-          className="border-2 rounded-md border-black bg-white text-center text-base text-black shadow-md w-48 hover:bg-sky-700"
-          onClick={getCityWeatherGeneralInformationFromAPI}
-        >
-          Get Weather Information!
-        </button>
-        <div>{cityWeatherTemperature?.temp}</div>
-        <div>{cityWeatherGeneralInformation?.main}</div>
-        <div>{cityWeatherGeneralInformation?.description}</div>
+    <div className="App flex items-center flex-col bg-black">
+      <div className="header">
+        <h1 className="text-center text-white text-4xl subpixel-antialiased font-medium tracking-wide mb-6">
+          Weather Report!
+        </h1>
       </div>
-    </>
+
+      <div className="weather-info border-solid border-2 w-64 bg-black flex justify-center">
+        <div className="flex-col flex">
+          {cityName !== "" ? (
+            <h1 className="text-white">
+              {" "}
+              {cityName}{" "}
+              <button onClick={handleDropDownClick}>
+                {dropDownClicked ? (
+                  <FontAwesomeIcon icon={faCaretUp} />
+                ) : (
+                  <FontAwesomeIcon icon={faCaretDown} />
+                )}
+              </button>{" "}
+            </h1>
+          ) : (
+            <h1 className="text-white">
+              Choose a city{" "}
+              <button onClick={handleDropDownClick}>
+                {dropDownClicked ? (
+                  <FontAwesomeIcon icon={faCaretUp} />
+                ) : (
+                  <FontAwesomeIcon icon={faCaretDown} />
+                )}
+              </button>
+            </h1>
+          )}
+          <div>
+            {dropDownClicked && (
+              <DropDownComponent handleCity={handleCityNameChange} />
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
