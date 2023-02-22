@@ -14,4 +14,8 @@
 
 .App {
   min-height: 100vh;
+  background: url(/sky.png);
+  background-size: cover;
+  background-clip: content-box;
+  background-position: center;
 }

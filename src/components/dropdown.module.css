@@ -1,0 +1,5 @@
+.cities {
+  display: grid;
+  grid-template-columns: repeat(4, 3fr);
+  gap: 0.5rem;
+}

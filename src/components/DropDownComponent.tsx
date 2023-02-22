@@ -1,14 +1,41 @@
-const DropDownComponent = ({ handleCity }: any) => {
-  const handleCityClicked = (cityName: string) => {
-    handleCity(cityName);
+import { useState } from "react";
+
+import styles from "./dropdown.module.css";
+
+interface CityCoordinates {
+  lat: number;
+  lon: number;
+}
+
+const DropDownComponent = ({
+  handleCityName,
+  handleCityCoordinates,
+  handleCityButtonClicked,
+}: any) => {
+  const [cityClicked, setCityClicked] = useState<boolean>(false);
+
+  const handleCityClicked = (
+    isClicked: boolean,
+    cityName: string,
+    coordinates: CityCoordinates
+  ) => {
+    handleCityButtonClicked(isClicked);
+    handleCityName(cityName);
+    handleCityCoordinates(coordinates);
   };
 
   return (
-    <div className="cities">
+    <div className={styles.cities}>
       {cities?.map((data: any) => (
         <h5
           className="text-white text-center border hover:scale-105 cursor-pointer"
-          onClick={() => handleCityClicked(data.city)}
+          onClick={() => {
+            setCityClicked(cityClicked ? false : true);
+            handleCityClicked(cityClicked, data.city, {
+              lat: data.lat,
+              lon: data.lng,
+            });
+          }}
           key={data.lat + data.lng}
         >
           {" "}
@@ -668,17 +695,6 @@ const cities = [
     capital: "minor",
     population: "1320",
     population_proper: "1320",
-  },
-  {
-    city: "Rustavi",
-    lat: "42.2897",
-    lng: "43.8543",
-    country: "Georgia",
-    iso2: "GE",
-    admin_name: "Kvemo Kartli",
-    capital: "admin",
-    population: "",
-    population_proper: "",
   },
   {
     city: "Khelvachauri",
