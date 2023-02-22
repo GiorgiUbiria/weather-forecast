@@ -30,9 +30,12 @@ function App() {
         description: String,
       },
     ]);
-  const [cityFourDayForecast, setCityFourDayForecast] = useState<any>({
-    list: [{ main: String }],
-  });
+  const [cityFiveDayForecast, setCityFiveDayForecast] = useState<any>([
+    {
+      main: {},
+      weather: [{}],
+    },
+  ]);
 
   const getCityWeatherInformationFromAPI = async (): Promise<void> => {
     const response = await (
@@ -41,18 +44,22 @@ function App() {
       )
     ).json();
 
-    setCityWeatherTemperature(response.main);
-    setCityWeatherGeneralInformation(response.weather[0]);
+    setCityWeatherTemperature(response?.main);
+    setCityWeatherGeneralInformation(response?.weather[0]);
   };
 
-  const getCityFourDayWeatherForecastFromAPI = async (): Promise<void> => {
+  const getCityFiveDayWeatherForecastFromAPI = async (): Promise<void> => {
     const response = await (
       await fetch(
-        `https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${cityCoordinates?.lat}&lon=${cityCoordinates?.lon}&appid=${apiKey}&units=metric`
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${cityCoordinates?.lat}&lon=${cityCoordinates?.lon}&appid=${apiKey}&units=metric`
       )
     ).json();
 
-    setCityFourDayForecast(response.list);
+    let newArr = response.list.filter((value: any, index: number, Arr: any) => {
+      return index % 8 == 0;
+    });
+
+    setCityFiveDayForecast(newArr);
   };
 
   const handleCityNameChange = (city: string) => {
@@ -74,6 +81,7 @@ function App() {
   };
 
   const handleShowForecastButton = () => {
+    getCityFiveDayWeatherForecastFromAPI();
     setForecastButtonClicked(true);
   };
 
@@ -93,7 +101,7 @@ function App() {
         <div className="flex-col flex mt-2">
           {cityName !== "" ? (
             <>
-              <h1 className="text-white text-3xl subpixel-antialiased font-medium">
+              <h1 className="text-white text-center text-3xl subpixel-antialiased font-medium">
                 {" "}
                 {cityName}{" "}
                 <button onClick={handleDropDownClick}>
@@ -106,7 +114,7 @@ function App() {
               </h1>
             </>
           ) : (
-            <h1 className="text-white text-3xl subpixel-antialiased font-medium">
+            <h1 className="text-white text-center text-3xl subpixel-antialiased font-medium">
               Choose a city{" "}
               <button onClick={handleDropDownClick}>
                 {dropDownClicked ? (
@@ -142,7 +150,7 @@ function App() {
               onClick={handleShowForecastButton}
             >
               {" "}
-              See 4-day Forecast{" "}
+              See 5-day Forecast{" "}
             </button>
           ) : null}
           <div>
@@ -150,8 +158,32 @@ function App() {
               <>
                 <h1 className="text-center text-white mt-4 text-2xl">
                   {" "}
-                  4 day forecast:
+                  5 day forecast:
                 </h1>
+                <div className="flex gap-6 justify-center mt-3">
+                  {cityFiveDayForecast.map((data: any, key: number) => (
+                    <div className="flex flex-col gap-2 justify-center">
+                      <h4 className="text-white" key={data.main.id + "_head"}>
+                        Get the current day and show for next 5 days
+                      </h4>
+                      <h5
+                        className="text-center text-white"
+                        key={data.main.id + "_temp"}
+                      >
+                        {" "}
+                        {Math.floor(data.main.temp)}
+                        {"°C"}
+                      </h5>
+                      <h5
+                        className="text-center text-white"
+                        key={data.main.id + "_info"}
+                      >
+                        {" "}
+                        {data.weather[0].main}
+                      </h5>
+                    </div>
+                  ))}
+                </div>
               </>
             )}
           </div>
