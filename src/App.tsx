@@ -2,7 +2,14 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCaretDown,
+  faCaretUp,
+  faCloudRain,
+  faSun,
+  faCloud,
+  faSnowflake,
+} from "@fortawesome/free-solid-svg-icons";
 
 import DropDownComponent from "./components/DropDownComponent";
 
@@ -12,6 +19,16 @@ interface CityCoordinates {
   lat: number;
   lon: number;
 }
+
+const daysOfWeek = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 function App() {
   const [forecastButtonClicked, setForecastButtonClicked] =
@@ -58,7 +75,7 @@ function App() {
     let newArr = response.list.filter((value: any, index: number, Arr: any) => {
       return index % 8 == 0;
     });
-
+    
     setCityFiveDayForecast(newArr);
   };
 
@@ -73,6 +90,7 @@ function App() {
   const handleCityButtonClicked = (clicked: boolean) => {
     clicked ? setDropDownVisible(false) : setDropDownVisible(true);
     clicked ? setDropDownClicked(true) : setDropDownClicked(false);
+    setForecastButtonClicked(false);
   };
 
   const handleDropDownClick = () => {
@@ -83,6 +101,17 @@ function App() {
   const handleShowForecastButton = () => {
     getCityFiveDayWeatherForecastFromAPI();
     setForecastButtonClicked(true);
+  };
+
+  const getNextFiveDays = () => {
+    const today = new Date();
+    const nextFiveDays = [];
+    for (let i = 1; i <= 5; i++) {
+      const nextDay = new Date(today);
+      nextDay.setDate(today.getDate() + i);
+      nextFiveDays.push(daysOfWeek[nextDay.getDay()]);
+    }
+    return nextFiveDays;
   };
 
   useEffect(() => {
@@ -137,7 +166,15 @@ function App() {
           <div>
             <h1 className="text-center text-white text-2xl subpixel-antialiased mt-2">
               {cityWeatherGeneralInformation?.main &&
-                cityWeatherGeneralInformation?.main}
+              cityWeatherGeneralInformation?.main === "Rain" ? (
+                <FontAwesomeIcon icon={faCloudRain} />
+              ) : cityWeatherGeneralInformation?.main === "Clouds" ? (
+                <FontAwesomeIcon icon={faCloud} />
+              ) : cityWeatherGeneralInformation?.main === "Clear" ? (
+                <FontAwesomeIcon icon={faSun} />
+              ) : cityWeatherGeneralInformation?.main === "Snow" ? (
+                <FontAwesomeIcon icon={faSnowflake} />
+              ) : null}
             </h1>
             <h1 className="text-center text-white text-2xl subpixel-antialiased">
               {cityWeatherTemperature?.temp &&
@@ -161,10 +198,10 @@ function App() {
                   5 day forecast:
                 </h1>
                 <div className="flex gap-6 justify-center mt-3">
-                  {cityFiveDayForecast.map((data: any, key: number) => (
+                  {cityFiveDayForecast.map((data: any, index: number) => (
                     <div className="flex flex-col gap-2 justify-center">
                       <h4 className="text-white" key={data.main.id + "_head"}>
-                        Get the current day and show for next 5 days
+                        {getNextFiveDays()[index]}
                       </h4>
                       <h5
                         className="text-center text-white"
@@ -178,8 +215,15 @@ function App() {
                         className="text-center text-white"
                         key={data.main.id + "_info"}
                       >
-                        {" "}
-                        {data.weather[0].main}
+                        {data.weather[0].main === "Rain" ? (
+                          <FontAwesomeIcon icon={faCloudRain} />
+                        ) : data.weather[0].main === "Clouds" ? (
+                          <FontAwesomeIcon icon={faCloud} />
+                        ) : data.weather[0].main === "Clear" ? (
+                          <FontAwesomeIcon icon={faSun} />
+                        ) : data.weather[0].main === "Snow" ? (
+                          <FontAwesomeIcon icon={faSnowflake} />
+                        ) : null}
                       </h5>
                     </div>
                   ))}
