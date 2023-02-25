@@ -12,10 +12,14 @@
   min-height: 100vh;
 }
 
-.App {
-  min-height: 100vh;
+body {
   background: url(/sky.png);
   background-size: cover;
   background-clip: content-box;
   background-position: center;
+  backdrop-filter: blur(2px);
+}
+
+.App {
+  min-height: 100vh;
 }
