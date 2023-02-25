@@ -31,6 +31,10 @@ const daysOfWeek = [
   "Saturday",
 ];
 
+function mps_to_kmph(mps: number) {
+  return 3.6 * mps;
+}
+
 function App() {
   const [forecastButtonClicked, setForecastButtonClicked] =
     useState<boolean>(false);
@@ -173,13 +177,13 @@ function App() {
             <h1 className="text-center text-white text-2xl subpixel-antialiased mt-2">
               {cityWeatherGeneralInformation?.main &&
               cityWeatherGeneralInformation?.main === "Rain" ? (
-                <FontAwesomeIcon icon={faCloudRain} />
+                <FontAwesomeIcon icon={faCloudRain} className="icon" />
               ) : cityWeatherGeneralInformation?.main === "Clouds" ? (
-                <FontAwesomeIcon icon={faCloud} />
+                <FontAwesomeIcon icon={faCloud} className="icon" />
               ) : cityWeatherGeneralInformation?.main === "Clear" ? (
-                <FontAwesomeIcon icon={faSun} />
+                <FontAwesomeIcon icon={faSun} className="icon" />
               ) : cityWeatherGeneralInformation?.main === "Snow" ? (
-                <FontAwesomeIcon icon={faSnowflake} />
+                <FontAwesomeIcon icon={faSnowflake} className="icon" />
               ) : null}
             </h1>
             <h1 className="text-center text-white text-2xl subpixel-antialiased">
@@ -193,8 +197,15 @@ function App() {
                   "°C"}
             </h1>
             <h1 className="text-center text-white text-2xl subpixel-antialiased">
-              {cityWindSpeed?.speed && cityWindSpeed?.speed + " - "}
-              {cityWindSpeed?.speed && <FontAwesomeIcon icon={faWind} />}
+              {cityWindSpeed?.speed &&
+                Math.round(
+                  mps_to_kmph(cityWindSpeed?.speed + Number.EPSILON) * 100
+                ) /
+                  100 +
+                  "km/h - "}
+              {cityWindSpeed?.speed && (
+                <FontAwesomeIcon icon={faWind} beatFade />
+              )}
             </h1>
           </div>
           <div className="flex justify-center">
@@ -233,9 +244,9 @@ function App() {
                         className="text-center text-white"
                         key={data.main.id + "_feel"}
                       >
-                        {cityWeatherTemperature?.feels_like &&
+                        {data?.main?.feels_like &&
                           "Feels like - " +
-                            Math.floor(cityWeatherTemperature?.feels_like) +
+                            Math.floor(data?.main?.feels_like) +
                             "°C"}
                       </h5>
                       <h5
@@ -243,21 +254,33 @@ function App() {
                         key={data.main.id + "_info"}
                       >
                         {data.weather[0].main === "Rain" ? (
-                          <FontAwesomeIcon icon={faCloudRain} />
+                          <FontAwesomeIcon
+                            icon={faCloudRain}
+                            className="icon"
+                          />
                         ) : data.weather[0].main === "Clouds" ? (
-                          <FontAwesomeIcon icon={faCloud} />
+                          <FontAwesomeIcon icon={faCloud} className="icon" />
                         ) : data.weather[0].main === "Clear" ? (
-                          <FontAwesomeIcon icon={faSun} />
+                          <FontAwesomeIcon icon={faSun} className="icon" />
                         ) : data.weather[0].main === "Snow" ? (
-                          <FontAwesomeIcon icon={faSnowflake} />
+                          <FontAwesomeIcon
+                            icon={faSnowflake}
+                            className="icon"
+                          />
                         ) : null}
                       </h5>
                       <h1
                         className="text-center text-white"
                         key={data.main.id + "_wind"}
                       >
-                        {data?.wind?.speed && data?.wind?.speed + " - "}
-                        <FontAwesomeIcon icon={faWind} />
+                        {data?.wind?.speed &&
+                          Math.round(
+                            mps_to_kmph(data?.wind?.speed + Number.EPSILON) *
+                              100
+                          ) /
+                            100 +
+                            "km/h - "}
+                        <FontAwesomeIcon icon={faWind} beatFade />
                       </h1>
                     </div>
                   ))}
