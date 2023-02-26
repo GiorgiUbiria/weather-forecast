@@ -1,7 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 
-import LoadingSpinner from "./LoadingSpinner";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCloudRain,
@@ -10,6 +8,7 @@ import {
   faSnowflake,
   faWind,
 } from "@fortawesome/free-solid-svg-icons";
+import { Skeleton } from "@mui/material";
 
 interface CityCoordinates {
   lat: number;
@@ -42,7 +41,16 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({
     }
   );
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading)
+    return (
+      <Skeleton
+        variant="rectangular"
+        width={300}
+        height={400}
+        animation="wave"
+        className="mt-2"
+      />
+    );
 
   if (isError) return <div>Error fetching data</div>;
 

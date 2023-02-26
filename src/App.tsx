@@ -14,6 +14,7 @@ import {
 
 import DropDownComponent from "./components/DropDownComponent";
 import WeatherInfo from "./components/WeatherInfo";
+import FiveDayForecast from "./components/FiveDayForecast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const apiKey = import.meta.env.VITE_OPEN_WEATHER_KEY;
@@ -21,20 +22,6 @@ const apiKey = import.meta.env.VITE_OPEN_WEATHER_KEY;
 interface CityCoordinates {
   lat: number;
   lon: number;
-}
-
-const daysOfWeek = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
-function mps_to_kmph(mps: number) {
-  return 3.6 * mps;
 }
 
 const queryClient = new QueryClient();
@@ -46,52 +33,6 @@ function App() {
   const [dropDownVisible, setDropDownVisible] = useState<boolean>(false);
   const [cityName, setCityName] = useState<string>("");
   const [cityCoordinates, setCityCoordinates] = useState<CityCoordinates>();
-  /*  const [cityWindSpeed, setCityWindSpeed] = useState<any>({
-    wind: {},
-  });
-  const [cityWeatherTemperature, setCityWeatherTemperature] = useState<any>({
-    main: {},
-  });
-  const [cityWeatherGeneralInformation, setCityWeatherGeneralInformation] =
-    useState<any>([
-      {
-        main: String,
-        description: String,
-      },
-    ]); */
-  const [cityFiveDayForecast, setCityFiveDayForecast] = useState<any>([
-    {
-      main: {},
-      weather: [{}],
-      wind: {},
-    },
-  ]);
-
-  /* const getCityWeatherInformationFromAPI = async (): Promise<any> => {
-    const response = await (
-      await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${cityCoordinates?.lat}&lon=${cityCoordinates?.lon}&appid=${apiKey}&units=metric`
-      )
-    ).json();
-
-    setCityWeatherTemperature(response?.main);
-    setCityWindSpeed(response?.wind);
-    setCityWeatherGeneralInformation(response?.weather[0]);
-  }; */
-
-  const getCityFiveDayWeatherForecastFromAPI = async (): Promise<any> => {
-    const response = await (
-      await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?lat=${cityCoordinates?.lat}&lon=${cityCoordinates?.lon}&appid=${apiKey}&units=metric`
-      )
-    ).json();
-
-    let newArr = response.list.filter((value: any, index: number, Arr: any) => {
-      return index % 8 == 0;
-    });
-
-    setCityFiveDayForecast(newArr);
-  };
 
   const handleCityNameChange = (city: string) => {
     setCityName(city);
@@ -115,23 +56,6 @@ function App() {
   const handleShowForecastButton = () => {
     setForecastButtonClicked(true);
   };
-
-  const getNextFiveDays = () => {
-    const today = new Date();
-    const nextFiveDays = [];
-    for (let i = 1; i <= 5; i++) {
-      const nextDay = new Date(today);
-      nextDay.setDate(today.getDate() + i);
-      nextFiveDays.push(daysOfWeek[nextDay.getDay()]);
-    }
-    return nextFiveDays;
-  };
-
-  useEffect(() => {
-    /* 
-    getCityWeatherInformationFromAPI(); */
-    getCityFiveDayWeatherForecastFromAPI();
-  }, [cityCoordinates, cityName]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -180,59 +104,6 @@ function App() {
               )}
             </div>
             <WeatherInfo cityCoordinates={cityCoordinates} apiKey={apiKey} />
-
-            {/* <div className="flex flex-col gap-2">
-            <h1 className="text-center text-white text-2xl subpixel-antialiased mt-2">
-            {cityWeatherGeneralInformation?.main &&
-              cityWeatherGeneralInformation?.main === "Rain" ? (
-                <FontAwesomeIcon
-                icon={faCloudRain}
-                className="icon-rain"
-                style={{ fontSize: "48px" }}
-                />
-                ) : cityWeatherGeneralInformation?.main === "Clouds" ? (
-                  <FontAwesomeIcon
-                  icon={faCloud}
-                  className="icon"
-                  style={{ fontSize: "48px" }}
-                  />
-                  ) : cityWeatherGeneralInformation?.main === "Clear" ? (
-                    <FontAwesomeIcon
-                    icon={faSun}
-                    className="icon-sun"
-                    style={{ fontSize: "48px" }}
-                    />
-                    ) : cityWeatherGeneralInformation?.main === "Snow" ? (
-                      <FontAwesomeIcon
-                      icon={faSnowflake}
-                  className="icon-snow"
-                  style={{ fontSize: "48px" }}
-                />
-                ) : null}
-                </h1>
-            <h1 className="text-center text-white text-2xl subpixel-antialiased">
-            {cityWeatherTemperature?.temp &&
-              Math.floor(cityWeatherTemperature?.temp) + "°C"}
-            </h1>
-            <h1 className="text-center text-white text-2xl subpixel-antialiased">
-              {cityWeatherTemperature?.feels_like &&
-                "Feels like - " +
-                Math.floor(cityWeatherTemperature?.feels_like) +
-                "°C"}
-                </h1>
-                <h1 className="text-center text-white text-2xl subpixel-antialiased">
-                {cityWindSpeed?.speed &&
-                  Math.round(
-                    mps_to_kmph(cityWindSpeed?.speed + Number.EPSILON) * 100
-                    ) /
-                    100 +
-                    "km/h - "}
-                    {cityWindSpeed?.speed && (
-                      <FontAwesomeIcon icon={faWind} beatFade />
-                      )}
-                      </h1>
-                      </div>
-                    */}
             <div className="flex justify-center">
               {cityName !== "" ? (
                 <button
@@ -244,85 +115,12 @@ function App() {
                 </button>
               ) : null}
             </div>
-            <div>
-              {forecastButtonClicked && (
-                <>
-                  <h1 className="text-center text-white mt-4 text-2xl">
-                    {" "}
-                    5 day forecast:
-                  </h1>
-                  <div className="flex gap-12 justify-center mt-3">
-                    {cityFiveDayForecast.map((data: any, index: number) => (
-                      <div className="flex flex-col gap-2 justify-center text-center w-32">
-                        <h4 className="text-white" key={data.main.id + "_head"}>
-                          {getNextFiveDays()[index]}
-                        </h4>
-                        <h5
-                          className="text-center text-white"
-                          key={data.main.id + "_temp"}
-                        >
-                          {" "}
-                          {Math.floor(data.main.temp)}
-                          {"°C"}
-                        </h5>
-                        <h5
-                          className="text-center text-white"
-                          key={data.main.id + "_feel"}
-                        >
-                          {data?.main?.feels_like &&
-                            "Feels like - " +
-                              Math.floor(data?.main?.feels_like) +
-                              "°C"}
-                        </h5>
-                        <h5
-                          className="text-center text-white"
-                          key={data.main.id + "_info"}
-                        >
-                          {data.weather[0].main === "Rain" ? (
-                            <FontAwesomeIcon
-                              icon={faCloudRain}
-                              className="icon-rain"
-                              style={{ fontSize: "32px" }}
-                            />
-                          ) : data.weather[0].main === "Clouds" ? (
-                            <FontAwesomeIcon
-                              icon={faCloud}
-                              className="icon"
-                              style={{ fontSize: "32px" }}
-                            />
-                          ) : data.weather[0].main === "Clear" ? (
-                            <FontAwesomeIcon
-                              icon={faSun}
-                              className="icon-sun"
-                              style={{ fontSize: "32px" }}
-                            />
-                          ) : data.weather[0].main === "Snow" ? (
-                            <FontAwesomeIcon
-                              icon={faSnowflake}
-                              className="icon-snow"
-                              style={{ fontSize: "32px" }}
-                            />
-                          ) : null}
-                        </h5>
-                        <h1
-                          className="text-center text-white"
-                          key={data.main.id + "_wind"}
-                        >
-                          {data?.wind?.speed &&
-                            Math.round(
-                              mps_to_kmph(data?.wind?.speed + Number.EPSILON) *
-                                100
-                            ) /
-                              100 +
-                              "km/h - "}
-                          <FontAwesomeIcon icon={faWind} beatFade />
-                        </h1>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
+            {forecastButtonClicked && (
+              <FiveDayForecast
+                cityCoordinates={cityCoordinates}
+                apiKey={apiKey}
+              />
+            )}
           </div>
         </div>
       </div>
