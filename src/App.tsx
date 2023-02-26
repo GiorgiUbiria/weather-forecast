@@ -109,7 +109,6 @@ function App() {
   };
 
   const handleShowForecastButton = () => {
-    getCityFiveDayWeatherForecastFromAPI();
     setForecastButtonClicked(true);
   };
 
@@ -126,6 +125,7 @@ function App() {
 
   useEffect(() => {
     getCityWeatherInformationFromAPI();
+    getCityFiveDayWeatherForecastFromAPI();
   }, [cityCoordinates, cityName]);
 
   return (
@@ -177,13 +177,29 @@ function App() {
             <h1 className="text-center text-white text-2xl subpixel-antialiased mt-2">
               {cityWeatherGeneralInformation?.main &&
               cityWeatherGeneralInformation?.main === "Rain" ? (
-                <FontAwesomeIcon icon={faCloudRain} className="icon" />
+                <FontAwesomeIcon
+                  icon={faCloudRain}
+                  className="icon-rain"
+                  style={{ fontSize: "64px" }}
+                />
               ) : cityWeatherGeneralInformation?.main === "Clouds" ? (
-                <FontAwesomeIcon icon={faCloud} className="icon" />
+                <FontAwesomeIcon
+                  icon={faCloud}
+                  className="icon-cloud"
+                  style={{ fontSize: "64px" }}
+                />
               ) : cityWeatherGeneralInformation?.main === "Clear" ? (
-                <FontAwesomeIcon icon={faSun} className="icon" />
+                <FontAwesomeIcon
+                  icon={faSun}
+                  className="icon-clear"
+                  style={{ fontSize: "64px" }}
+                />
               ) : cityWeatherGeneralInformation?.main === "Snow" ? (
-                <FontAwesomeIcon icon={faSnowflake} className="icon" />
+                <FontAwesomeIcon
+                  icon={faSnowflake}
+                  className="icon-snow"
+                  style={{ fontSize: "64px" }}
+                />
               ) : null}
             </h1>
             <h1 className="text-center text-white text-2xl subpixel-antialiased">
@@ -224,20 +240,23 @@ function App() {
               <>
                 <h1 className="text-center text-white mt-4 text-2xl">
                   {" "}
-                  5 day forecast:
+                  5-day forecast:
                 </h1>
                 <div className="flex gap-12 justify-center mt-3">
                   {cityFiveDayForecast.map((data: any, index: number) => (
                     <div className="flex flex-col gap-2 justify-center text-center w-32">
-                      <h4 className="text-white" key={data.main.id + "_head"}>
+                      <h4
+                        className="text-white text-2xl"
+                        key={data.main.id + "_head"}
+                      >
                         {getNextFiveDays()[index]}
                       </h4>
                       <h5
                         className="text-center text-white"
-                        key={data.main.id + "_temp"}
+                        key={data?.main?.id + "_temp"}
                       >
                         {" "}
-                        {Math.floor(data.main.temp)}
+                        {Math.floor(data?.main?.temp)}
                         {"°C"}
                       </h5>
                       <h5
@@ -256,16 +275,26 @@ function App() {
                         {data.weather[0].main === "Rain" ? (
                           <FontAwesomeIcon
                             icon={faCloudRain}
-                            className="icon"
+                            className="icon-rain"
+                            style={{ fontSize: "32px" }}
                           />
                         ) : data.weather[0].main === "Clouds" ? (
-                          <FontAwesomeIcon icon={faCloud} className="icon" />
+                          <FontAwesomeIcon
+                            icon={faCloud}
+                            className="icon-cloud"
+                            style={{ fontSize: "32px" }}
+                          />
                         ) : data.weather[0].main === "Clear" ? (
-                          <FontAwesomeIcon icon={faSun} className="icon" />
+                          <FontAwesomeIcon
+                            icon={faSun}
+                            className="icon-clear"
+                            style={{ fontSize: "32px" }}
+                          />
                         ) : data.weather[0].main === "Snow" ? (
                           <FontAwesomeIcon
                             icon={faSnowflake}
-                            className="icon"
+                            className="icon-snow"
+                            style={{ fontSize: "32px" }}
                           />
                         ) : null}
                       </h5>

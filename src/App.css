@@ -3,18 +3,66 @@
   min-width: 600px;
 }
 
-.icon {
-  animation-name: icon;
+.icon-rain {
+  animation-name: icon-rain;
   animation-duration: 3s;
   animation-iteration-count: infinite;
   animation-direction: alternate;
 }
 
-@keyframes icon {
+.icon-clear {
+  animation-name: icon-clear;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+.icon-snow {
+  animation-name: icon-snow;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+.icon-cloud {
+  animation-name: icon-cloud;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes icon-rain {
+  0% {
+    color: blue;
+  }
+  100% {
+    color: whitesmoke;
+  }
+}
+
+@keyframes icon-cloud {
   0% {
     color: #5f5f5f;
   }
   100% {
     color: #3f3f3f;
+  }
+}
+
+@keyframes icon-clear {
+  0% {
+    color: yellow;
+  }
+  100% {
+    color: orange;
+  }
+}
+
+@keyframes icon-snow {
+  0% {
+    color: blue;
+  }
+  100% {
+    color: white;
   }
 }
