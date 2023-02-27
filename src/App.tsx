@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Particles from "react-particles";
 import { loadFull } from "tsparticles";
+import { ISourceOptions } from "tsparticles-engine";
 
 import WeatherInfo from "./components/WeatherInfo";
 import FiveDayForecast from "./components/FiveDayForecast";
@@ -17,7 +18,7 @@ interface CityCoordinates {
   lon: number;
 }
 
-const options = {
+const options: ISourceOptions = {
   particles: {
     number: {
       value: 30,
