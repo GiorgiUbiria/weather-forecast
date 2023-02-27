@@ -46,7 +46,7 @@ const Header = ({ handleData }: any) => {
   return (
     <>
       <div className="header">
-        <h1 className="text-center text-6xl subpixel-antialiased font-medium tracking-wide mb-6 text-red-500">
+        <h1 className="text-center subpixel-antialiased font-medium tracking-wide text-red-500 text-2xl md:text-6xl md:mb-6 sm:text-4xl sm:mb-3">
           Weather Report!
         </h1>
       </div>
@@ -56,7 +56,7 @@ const Header = ({ handleData }: any) => {
           <div className="flex-col flex">
             {cityName !== "" ? (
               <>
-                <h1 className="text-white text-center text-3xl subpixel-antialiased font-medium">
+                <h1 className="text-white text-2xl text-center subpixel-antialiased font-medium md:text-3xl">
                   {" "}
                   {cityName}{" "}
                   <button onClick={handleDropDownClick}>
@@ -70,7 +70,7 @@ const Header = ({ handleData }: any) => {
               </>
             ) : (
               <>
-                <h1 className="text-white text-center text-3xl subpixel-antialiased font-medium">
+                <h1 className="text-white text-center text-2xl subpixel-antialiased font-medium md:text-3xl">
                   Choose a city{" "}
                   <button onClick={handleDropDownClick}>
                     {dropDownClicked ? (

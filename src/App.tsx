@@ -43,7 +43,7 @@ function App() {
         <div className="flex justify-center">
           {cityName !== "" ? (
             <button
-              className="text-white text-3xl subpixel-antialiased font-medium border-2 rounded-md p-2 mt-5 hover:scale-105 w-96"
+              className="text-white text-xl subpixel-antialiased font-medium border rounded-sm p-1 mt-2 hover:scale-105 w-72 sm:w-96 sm:text-3xl sm:border-2 sm:rounded-md sm:p-2 sm:mt-6"
               onClick={handleShowForecastButton}
             >
               {" "}

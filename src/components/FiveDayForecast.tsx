@@ -70,13 +70,11 @@ const FiveDayForecast: React.FC<WeatherInfoProps> = ({
 
   if (isLoading)
     return (
-      <Skeleton
-        variant="rectangular"
-        width={500}
-        height={200}
-        animation="wave"
-        className="mt-2"
-      />
+      <>
+        <Skeleton variant="rectangular" width={510} height={118} />
+        <Skeleton variant="rectangular" width={510} height={118} />
+        <Skeleton variant="rectangular" width={510} height={118} />
+      </>
     );
 
   if (isError) return <div>Error fetching data</div>;
@@ -85,50 +83,52 @@ const FiveDayForecast: React.FC<WeatherInfoProps> = ({
 
   return (
     <div>
-      <h1 className="text-center text-white mt-4 text-2xl"> 5 day forecast:</h1>
-      <div className="flex gap-12 justify-center mt-3">
+      <h1 className="text-center text-white mt-2 text-xl sm:mt-4 sm:text-2xl">
+        {" "}
+        5 day forecast:
+      </h1>
+      <div className="flex flex-col gap-4 mt-2 justify-center md:gap-6 md:mt-3 md:flex-row xl:gap-10">
         {cityFiveDayForecast.map((data: any, index: number) => (
-          <div className="flex flex-col gap-2 justify-center text-center w-32">
-            <h4 className="text-white" key={data.main.id + "_head"}>
+          <div className="flex flex-col justify-center text-center sm:w-36 sm:gap-2">
+            <h4
+              className="text-red-700 text-xl md:text-3xl sm:text-2xl"
+              key={data.main.id + "_head"}
+            >
               {getNextFiveDays()[index]}
             </h4>
-            <h5 className="text-center text-white" key={data.main.id + "_temp"}>
+            <h5
+              className="text-center text-white sm:text-xl"
+              key={data.main.id + "_temp"}
+            >
               {" "}
               {Math.floor(data.main.temp)}
               {"°C"}
             </h5>
-            <h5 className="text-center text-white" key={data.main.id + "_feel"}>
+            <h5
+              className="text-center text-white sm:text-xl"
+              key={data.main.id + "_feel"}
+            >
               {data?.main?.feels_like &&
                 "Feels like - " + Math.floor(data?.main?.feels_like) + "°C"}
             </h5>
-            <h5 className="text-center text-white" key={data.main.id + "_info"}>
+            <h5
+              className="text-center text-white text-2xl md:text-4xl"
+              key={data.main.id + "_info"}
+            >
               {data.weather[0].main === "Rain" ? (
-                <FontAwesomeIcon
-                  icon={faCloudRain}
-                  className="icon-rain"
-                  style={{ fontSize: "32px" }}
-                />
+                <FontAwesomeIcon icon={faCloudRain} className="icon-rain" />
               ) : data.weather[0].main === "Clouds" ? (
-                <FontAwesomeIcon
-                  icon={faCloud}
-                  className="icon"
-                  style={{ fontSize: "32px" }}
-                />
+                <FontAwesomeIcon icon={faCloud} className="icon" />
               ) : data.weather[0].main === "Clear" ? (
-                <FontAwesomeIcon
-                  icon={faSun}
-                  className="icon-sun"
-                  style={{ fontSize: "32px" }}
-                />
+                <FontAwesomeIcon icon={faSun} className="icon-sun" />
               ) : data.weather[0].main === "Snow" ? (
-                <FontAwesomeIcon
-                  icon={faSnowflake}
-                  className="icon-snow"
-                  style={{ fontSize: "32px" }}
-                />
+                <FontAwesomeIcon icon={faSnowflake} className="icon-snow" />
               ) : null}
             </h5>
-            <h1 className="text-center text-white" key={data.main.id + "_wind"}>
+            <h1
+              className="text-center text-white sm:text-xl"
+              key={data.main.id + "_wind"}
+            >
               {data?.wind?.speed &&
                 Math.round(
                   mps_to_kmph(data?.wind?.speed + Number.EPSILON) * 100

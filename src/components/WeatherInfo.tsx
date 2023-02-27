@@ -46,7 +46,7 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({
       <Skeleton
         variant="rectangular"
         width={300}
-        height={400}
+        height={200}
         animation="wave"
         className="mt-2"
       />
@@ -59,46 +59,30 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({
   const cityWindSpeed = data?.wind ?? {};
 
   return (
-    <div className="flex flex-col gap-2">
-      <h1 className="text-center text-white text-2xl subpixel-antialiased mt-2">
+    <div className="flex flex-col md:gap-2 sm:gap-1">
+      <h1 className="text-center text-white text-2xl subpixel-antialiased mt-2 md:text-4xl">
         {cityWeatherGeneralInformation?.main &&
         cityWeatherGeneralInformation?.main === "Rain" ? (
-          <FontAwesomeIcon
-            icon={faCloudRain}
-            className="icon-rain"
-            style={{ fontSize: "48px" }}
-          />
+          <FontAwesomeIcon icon={faCloudRain} className="icon-rain" />
         ) : cityWeatherGeneralInformation?.main === "Clouds" ? (
-          <FontAwesomeIcon
-            icon={faCloud}
-            className="icon"
-            style={{ fontSize: "48px" }}
-          />
+          <FontAwesomeIcon icon={faCloud} className="icon" />
         ) : cityWeatherGeneralInformation?.main === "Clear" ? (
-          <FontAwesomeIcon
-            icon={faSun}
-            className="icon-sun"
-            style={{ fontSize: "48px" }}
-          />
+          <FontAwesomeIcon icon={faSun} className="icon-sun" />
         ) : cityWeatherGeneralInformation?.main === "Snow" ? (
-          <FontAwesomeIcon
-            icon={faSnowflake}
-            className="icon-snow"
-            style={{ fontSize: "48px" }}
-          />
+          <FontAwesomeIcon icon={faSnowflake} className="icon-snow" />
         ) : null}
       </h1>
-      <h1 className="text-center text-white text-2xl subpixel-antialiased">
+      <h1 className="text-center text-white subpixel-antialiased md:text-3xl sm:text-2xl">
         {cityWeatherTemperature?.temp &&
           Math.floor(cityWeatherTemperature?.temp) + "°C"}
       </h1>
-      <h1 className="text-center text-white text-2xl subpixel-antialiased">
+      <h1 className="text-center text-white subpixel-antialiased md:text-3xl sm:text-2xl">
         {cityWeatherTemperature?.feels_like &&
           "Feels like - " +
             Math.floor(cityWeatherTemperature?.feels_like) +
             "°C"}
       </h1>
-      <h1 className="text-center text-white text-2xl subpixel-antialiased">
+      <h1 className="text-center text-white subpixel-antialiased  md:text-3xl sm:text-2xl">
         {cityWindSpeed?.speed &&
           Math.round(mps_to_kmph(cityWindSpeed?.speed + Number.EPSILON) * 100) /
             100 +
