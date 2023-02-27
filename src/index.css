@@ -8,17 +8,17 @@
   margin: 0;
 }
 
-#root {
-  min-height: 100vh;
-}
-
 body {
-  min-height: 100vh;  
+  min-height: 100vh;
   background: url(/sky.png);
   background-size: cover;
   background-clip: content-box;
   background-position: center;
   backdrop-filter: blur(2px);
+}
+
+#root {
+  min-height: 100vh;
 }
 
 .App {
