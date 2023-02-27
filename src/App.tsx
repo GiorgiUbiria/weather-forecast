@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Particles from "react-particles";
+import { loadFull } from "tsparticles";
 
 import WeatherInfo from "./components/WeatherInfo";
 import FiveDayForecast from "./components/FiveDayForecast";
@@ -15,11 +17,77 @@ interface CityCoordinates {
   lon: number;
 }
 
+const options = {
+  particles: {
+    number: {
+      value: 30,
+      density: {
+        enable: true,
+        area: 1500,
+      },
+    },
+    color: {
+      value: ["#2EB67D", "#ECB22E", "#E01E5B", "#36C5F0", "#FFFF"],
+    },
+    shape: {
+      type: "star",
+    },
+    opacity: {
+      value: 0.8,
+    },
+    size: {
+      value: { min: 1, max: 6 },
+    },
+    links: {
+      enable: true,
+      distance: 150,
+      color: "#808080",
+      opacity: 0.4,
+      width: 1,
+    },
+    move: {
+      enable: true,
+      speed: 3,
+      direction: "none",
+      random: false,
+      straight: false,
+      outModes: "out",
+    },
+  },
+  interactivity: {
+    events: {
+      onHover: {
+        enable: true,
+        mode: "grab",
+      },
+      onClick: {
+        enable: true,
+        mode: "push",
+      },
+    },
+    modes: {
+      grab: {
+        distance: 140,
+        links: {
+          opacity: 1,
+        },
+      },
+      push: {
+        quantity: 4,
+      },
+    },
+  },
+};
+
 function App() {
   const [forecastButtonClicked, setForecastButtonClicked] =
     useState<boolean>(false);
   const [cityName, setCityName] = useState<string>("");
   const [cityCoordinates, setCityCoordinates] = useState<CityCoordinates>();
+
+  const particlesInit = useCallback(async (engine: any) => {
+    await loadFull(engine);
+  }, []);
 
   const handleDataFromHeader = (
     clicked: boolean,
@@ -38,6 +106,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="App flex items-center flex-col">
+        <Particles options={options} init={particlesInit} />
         <Header handleData={handleDataFromHeader} />
         <WeatherInfo cityCoordinates={cityCoordinates} apiKey={apiKey} />
         <div className="flex justify-center">
