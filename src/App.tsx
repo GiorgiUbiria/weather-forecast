@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import Particles from "react-particles";
+import { loadFull } from "tsparticles";
 import "./App.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -62,6 +64,72 @@ function App() {
       wind: {},
     },
   ]);
+
+  const options = {
+    particles: {
+      number: {
+        value: 30,
+        density: {
+          enable: true,
+          area: 1500,
+        },
+      },
+      color: {
+        value: ["#2EB67D", "#ECB22E", "#E01E5B", "#36C5F0"],
+      },
+      shape: {
+        type: "circle",
+      },
+      opacity: {
+        value: 0.8,
+      },
+      size: {
+        value: { min: 1, max: 6 },
+      },
+      links: {
+        enable: true,
+        distance: 150,
+        color: "#808080",
+        opacity: 0.4,
+        width: 1,
+      },
+      move: {
+        enable: true,
+        speed: 3,
+        direction: "none",
+        random: false,
+        straight: false,
+        outModes: "out",
+      },
+    },
+    interactivity: {
+      events: {
+        onHover: {
+          enable: true,
+          mode: "grab",
+        },
+        onClick: {
+          enable: true,
+          mode: "push",
+        },
+      },
+      modes: {
+        grab: {
+          distance: 140,
+          links: {
+            opacity: 1,
+          },
+        },
+        push: {
+          quantity: 4,
+        },
+      },
+    },
+  };
+
+  const particlesInit = useCallback(async (engine: any) => {
+    await loadFull(engine);
+  }, []);
 
   const getCityWeatherInformationFromAPI = async (): Promise<any> => {
     const response = await (
@@ -130,6 +198,7 @@ function App() {
 
   return (
     <div className="App flex items-center flex-col">
+      <Particles options={options} init={particlesInit} />
       <div className="header">
         <h1 className="text-center text-4xl subpixel-antialiased font-medium tracking-wide mb-6 text-red-500">
           Weather Report!
