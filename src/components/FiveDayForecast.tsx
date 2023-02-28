@@ -70,11 +70,12 @@ const FiveDayForecast: React.FC<WeatherInfoProps> = ({
 
   if (isLoading)
     return (
-      <>
-        <Skeleton variant="rectangular" width={510} height={118} />
-        <Skeleton variant="rectangular" width={510} height={118} />
-        <Skeleton variant="rectangular" width={510} height={118} />
-      </>
+      <Skeleton
+        variant="rectangular"
+        width={510}
+        height={118}
+        animation="wave"
+      />
     );
 
   if (isError) return <div>Error fetching data</div>;

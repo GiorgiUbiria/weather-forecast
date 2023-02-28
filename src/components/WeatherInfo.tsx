@@ -46,7 +46,7 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({
       <Skeleton
         variant="rectangular"
         width={300}
-        height={200}
+        height={180}
         animation="wave"
         className="mt-2"
       />

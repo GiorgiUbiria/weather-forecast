@@ -21,7 +21,7 @@ interface CityCoordinates {
 const options: ISourceOptions = {
   particles: {
     number: {
-      value: 30,
+      value: 15,
       density: {
         enable: true,
         area: 1500,
