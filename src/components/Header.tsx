@@ -46,30 +46,34 @@ const Header = ({ handleData }: any) => {
   
   useEffect(() => {
     if (initialLoad && cityName === "") {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const userCoordinates: CityCoordinates = {
-            lat: position.coords.latitude,
-            lon: position.coords.longitude,
-          };
-          setCityCoordinates(userCoordinates);
-          fetch(
-            `https://api.opencagedata.com/geocode/v1/json?q=${userCoordinates.lat}+${userCoordinates.lon}&key=${geoCage}`
-          )
-            .then((response) => response.json())
-            .then((data) => {
-              const city = data.results[0].components.city;
-              setCityName(city);
-              setInitialLoad(false);
-            })
-            .catch((error) => {
-              console.error("Error reverse geocoding:", error);
-            });
-        },
-        (error) => {
-          console.error("Error getting user coordinates:", error);
-        }
-      );
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const userCoordinates: CityCoordinates = {
+              lat: position.coords.latitude,
+              lon: position.coords.longitude,
+            };
+            setCityCoordinates(userCoordinates);
+            fetch(
+              `https://api.opencagedata.com/geocode/v1/json?q=${userCoordinates.lat}+${userCoordinates.lon}&key=${geoCage}`
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                const city = data.results[0].components.city;
+                setCityName(city);
+                setInitialLoad(false);
+              })
+              .catch((error) => {
+                console.error("Error reverse geocoding:", error);
+              });
+          },
+          (error) => {
+            console.error("Error getting user coordinates:", error);
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported in this browser.");
+      }
     }
   }, [initialLoad, cityName]);
 
