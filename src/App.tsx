@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Particles from "react-particles";
 import { loadFull } from "tsparticles";
@@ -84,7 +84,10 @@ function App() {
   const [forecastButtonClicked, setForecastButtonClicked] =
     useState<boolean>(false);
   const [cityName, setCityName] = useState<string>("");
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [cityCoordinates, setCityCoordinates] = useState<CityCoordinates>();
+  const [geolocationPermission, setGeolocationPermission] =
+    useState<boolean | null>(null);
 
   const particlesInit = useCallback(async (engine: any) => {
     await loadFull(engine);
@@ -93,37 +96,72 @@ function App() {
   const handleDataFromHeader = (
     clicked: boolean,
     name: string,
-    coordinates: CityCoordinates
+    coordinates: CityCoordinates,
+    initialLoad: boolean
   ) => {
     setCityName(name);
     setForecastButtonClicked(clicked);
     setCityCoordinates(coordinates);
-  };
+    setInitialLoad(initialLoad);
+  };  
 
   const handleShowForecastButton = () => {
     setForecastButtonClicked(true);
   };
 
+  useEffect(() => {
+    const handleGeolocationPermission = () => {
+      if (navigator.permissions) {
+        navigator.permissions
+          .query({ name: "geolocation" })
+          .then((result) => {
+            setGeolocationPermission(result.state === "granted");
+          });
+      } else if ("geolocation" in navigator) {
+        setGeolocationPermission(true);
+      } else {
+        setGeolocationPermission(false);
+      }
+    };
+
+    handleGeolocationPermission();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <div className="App flex items-center flex-col">
-        <Particles options={options} init={particlesInit} />
-        <Header handleData={handleDataFromHeader} />
-        <WeatherInfo cityCoordinates={cityCoordinates} apiKey={apiKey} />
-        <div className="flex justify-center">
-          {cityName !== "" ? (
-            <button
-              className="text-white text-xl subpixel-antialiased font-medium border rounded-sm p-1 mt-2 hover:scale-105 w-72 sm:w-96 sm:text-3xl sm:border-2 sm:rounded-md sm:p-2 sm:mt-6"
-              onClick={handleShowForecastButton}
-            >
-              {" "}
-              See 5-day Forecast{" "}
-            </button>
-          ) : null}
-        </div>
-        {forecastButtonClicked && (
-          <FiveDayForecast cityCoordinates={cityCoordinates} apiKey={apiKey} />
-        )}
+        <Suspense fallback={<div>Loading...</div>}>
+          {geolocationPermission === null ? (
+            <div>Accept/Reject the geolocation services</div>
+          ) : geolocationPermission === false ? (
+            <Header handleData={handleDataFromHeader} geolocationEnabled={false} />
+          ) : (
+            <>
+              <Header handleData={handleDataFromHeader} geolocationEnabled={true} />
+              {cityCoordinates && (
+                <>
+                  <WeatherInfo cityCoordinates={cityCoordinates} apiKey={apiKey} />
+                  <div className="flex justify-center">
+                    {cityName !== "" ? (
+                      <button
+                        className="text-white text-xl subpixel-antialiased font-medium border rounded-sm p-1 mt-2 hover:scale-105 w-72 sm:w-96 sm:text-3xl sm:border-2 sm:rounded-md sm:p-2 sm:mt-6"
+                        onClick={handleShowForecastButton}
+                      >
+                        See 5-day Forecast
+                      </button>
+                    ) : null}
+                  </div>
+                  {forecastButtonClicked && (
+                    <FiveDayForecast
+                      cityCoordinates={cityCoordinates}
+                      apiKey={apiKey}
+                    />
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </Suspense>
       </div>
     </QueryClientProvider>
   );

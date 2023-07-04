@@ -7,23 +7,27 @@ import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 
 import "./header.module.css";
 
+const geoCage = import.meta.env.VITE_GEO_CAGE_KEY;
+
 interface CityCoordinates {
   lat: number;
   lon: number;
 }
 
-const Header = ({ handleData }: any) => {
+const Header = ({ handleData, geolocationEnabled }: any) => {
   const [forecastButtonClicked, setForecastButtonClicked] =
     useState<boolean>(false);
   const [dropDownClicked, setDropDownClicked] = useState<boolean>(false);
   const [dropDownVisible, setDropDownVisible] = useState<boolean>(false);
   const [cityName, setCityName] = useState<string>("");
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [cityCoordinates, setCityCoordinates] = useState<CityCoordinates>();
 
   const handleDropDownClick = () => {
     dropDownClicked ? setDropDownClicked(false) : setDropDownClicked(true);
     dropDownClicked ? setDropDownVisible(true) : setDropDownVisible(false);
-  };
+    setForecastButtonClicked(true);
+  };  
 
   const handleCityNameChange = (city: string) => {
     setCityName(city);
@@ -39,8 +43,38 @@ const Header = ({ handleData }: any) => {
     setForecastButtonClicked(false);
   };
 
+  
   useEffect(() => {
-    handleData(forecastButtonClicked, cityName, cityCoordinates);
+    if (geolocationEnabled && initialLoad && cityName === "") {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userCoordinates: CityCoordinates = {
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          };
+          setCityCoordinates(userCoordinates);
+          fetch(
+            `https://api.opencagedata.com/geocode/v1/json?q=${userCoordinates.lat}+${userCoordinates.lon}&key=${geoCage}`
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              const city = data.results[0].components.city;
+              setCityName(city);
+              setInitialLoad(false);
+            })
+            .catch((error) => {
+              console.error("Error reverse geocoding:", error);
+            });
+        },
+        (error) => {
+          console.error("Error getting user coordinates:", error);
+        }
+      );
+    }
+  }, [geolocationEnabled, initialLoad, cityName]);
+
+  useEffect(() => {
+    handleData(forecastButtonClicked, cityName, cityCoordinates, initialLoad);
   }, [cityName, cityCoordinates]);
 
   return (
@@ -54,7 +88,7 @@ const Header = ({ handleData }: any) => {
       <div className="weather-info w-64 flex justify-center">
         <div className="flex-col flex">
           <div className="flex-col flex">
-            {cityName !== "" ? (
+            {cityName !== "" && initialLoad !== true ? (
               <>
                 <h1 className="text-white text-2xl text-center subpixel-antialiased font-medium md:text-3xl">
                   {" "}
