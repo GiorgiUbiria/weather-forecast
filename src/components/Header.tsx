@@ -31,7 +31,8 @@ const Header = ({ handleData }: any) => {
 
   const handleCityNameChange = (city: string) => {
     setCityName(city);
-  };
+    setInitialLoad(false);
+  };  
 
   const handleCityCoordinates = (coordinates: CityCoordinates) => {
     setCityCoordinates(coordinates);
@@ -79,7 +80,10 @@ const Header = ({ handleData }: any) => {
 
   useEffect(() => {
     handleData(forecastButtonClicked, cityName, cityCoordinates, initialLoad);
-  }, [cityName, cityCoordinates]);
+  }, [cityName, cityCoordinates, initialLoad]);
+
+  console.log(cityName);
+  
 
   return (
     <>
@@ -92,7 +96,7 @@ const Header = ({ handleData }: any) => {
       <div className="weather-info w-64 flex justify-center">
         <div className="flex-col flex">
           <div className="flex-col flex">
-            {cityName !== "" && initialLoad !== true ? (
+            {cityName !== "" || initialLoad !== true ? (
               <>
                 <h1 className="text-white text-2xl text-center subpixel-antialiased font-medium md:text-3xl">
                   {" "}
