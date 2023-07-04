@@ -28,7 +28,7 @@ const DropDownComponent = ({
     <div className={styles.cities}>
       {cities?.map((data: any) => (
         <h5
-          className="text-white text-center border rounded-md hover:scale-105 hover:shadow-md cursor-pointer w-32"
+          className="text-white text-center border rounded-md hover:scale-105 hover:shadow-sm cursor-pointer w-28 text-sm sm:text-md sm:w-34 sm:hover:shadow-md"
           onClick={() => {
             setCityClicked(cityClicked ? false : true);
             handleCityClicked(cityClicked, data.city, {

@@ -9,11 +9,12 @@
 }
 
 body {
-  background: url(/sky.png);
+  min-height: 100vh;
+  background: black;
   background-size: cover;
   background-clip: content-box;
   background-position: center;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(3px);
 }
 
 #root {
