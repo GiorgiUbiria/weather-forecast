@@ -4,3 +4,40 @@
   grid-template-columns: repeat(9, 2fr);
   gap: 0.5rem;
 }
+
+@media screen and (max-width: 1024px) {
+  .cities {
+    grid-template-columns: repeat(7, 2fr);
+  }
+}
+
+@media screen and (max-width: 820px) {
+  .cities {
+    grid-template-columns: repeat(6, 4fr);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .cities {
+    grid-template-columns: repeat(6, 3fr);
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .cities {
+    gap: 0.25rem;
+    grid-template-columns: repeat(4, 2fr);
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .cities {
+    grid-template-columns: repeat(3, 2fr);
+  }
+}
+
+@media screen and (max-width: 280px) {
+  .cities {
+    grid-template-columns: repeat(2, 2fr);
+  }
+}
