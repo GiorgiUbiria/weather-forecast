@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, Suspense } from "react";
+import { useCallback, useState, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Particles from "react-particles";
 import { loadFull } from "tsparticles";
@@ -86,8 +86,6 @@ function App() {
   const [cityName, setCityName] = useState<string>("");
   const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [cityCoordinates, setCityCoordinates] = useState<CityCoordinates>();
-  const [geolocationPermission, setGeolocationPermission] =
-    useState<boolean | null>(null);
 
   const particlesInit = useCallback(async (engine: any) => {
     await loadFull(engine);
@@ -109,35 +107,13 @@ function App() {
     setForecastButtonClicked(true);
   };
 
-  useEffect(() => {
-    const handleGeolocationPermission = () => {
-      if (navigator.permissions) {
-        navigator.permissions
-          .query({ name: "geolocation" })
-          .then((result) => {
-            setGeolocationPermission(result.state === "granted");
-          });
-      } else if ("geolocation" in navigator) {
-        setGeolocationPermission(true);
-      } else {
-        setGeolocationPermission(false);
-      }
-    };
-
-    handleGeolocationPermission();
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <div className="App flex items-center flex-col">
+        <Particles options={options} init={particlesInit} />
         <Suspense fallback={<div>Loading...</div>}>
-          {geolocationPermission === null ? (
-            <div>Accept/Reject the geolocation services</div>
-          ) : geolocationPermission === false ? (
-            <Header handleData={handleDataFromHeader} geolocationEnabled={false} />
-          ) : (
             <>
-              <Header handleData={handleDataFromHeader} geolocationEnabled={true} />
+              <Header handleData={handleDataFromHeader} />
               {cityCoordinates && (
                 <>
                   <WeatherInfo cityCoordinates={cityCoordinates} apiKey={apiKey} />
@@ -160,7 +136,6 @@ function App() {
                 </>
               )}
             </>
-          )}
         </Suspense>
       </div>
     </QueryClientProvider>

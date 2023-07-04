@@ -14,7 +14,7 @@ interface CityCoordinates {
   lon: number;
 }
 
-const Header = ({ handleData, geolocationEnabled }: any) => {
+const Header = ({ handleData }: any) => {
   const [forecastButtonClicked, setForecastButtonClicked] =
     useState<boolean>(false);
   const [dropDownClicked, setDropDownClicked] = useState<boolean>(false);
@@ -45,7 +45,7 @@ const Header = ({ handleData, geolocationEnabled }: any) => {
 
   
   useEffect(() => {
-    if (geolocationEnabled && initialLoad && cityName === "") {
+    if (initialLoad && cityName === "") {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const userCoordinates: CityCoordinates = {
@@ -71,7 +71,7 @@ const Header = ({ handleData, geolocationEnabled }: any) => {
         }
       );
     }
-  }, [geolocationEnabled, initialLoad, cityName]);
+  }, [initialLoad, cityName]);
 
   useEffect(() => {
     handleData(forecastButtonClicked, cityName, cityCoordinates, initialLoad);
