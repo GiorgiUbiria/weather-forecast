@@ -59,20 +59,28 @@ const Header = ({ handleData }: any) => {
                 <h1 className="text-white text-2xl text-center subpixel-antialiased font-medium md:text-3xl">
                   {" "}
                   {cityName}{" "}
-                  <button onClick={handleDropDownClick}>
+                  <button
+                    onClick={handleDropDownClick}
+                    aria-label={dropDownClicked ? 'Collapse dropdown' : 'Expand dropdown'}
+                    role="button"
+                  >
                     {dropDownClicked ? (
                       <FontAwesomeIcon icon={faCaretUp} />
                     ) : (
                       <FontAwesomeIcon icon={faCaretDown} />
                     )}
-                  </button>{" "}
+                  </button>
                 </h1>
               </>
             ) : (
               <>
                 <h1 className="text-white text-center text-2xl subpixel-antialiased font-medium md:text-3xl">
                   Choose a city{" "}
-                  <button onClick={handleDropDownClick}>
+                  <button 
+                    onClick={handleDropDownClick}
+                    aria-label={dropDownClicked ? 'Collapse dropdown' : 'Expand dropdown'}
+                    role="button"
+                  >
                     {dropDownClicked ? (
                       <FontAwesomeIcon icon={faCaretUp} />
                     ) : (
