@@ -5,10 +5,12 @@ import DropDownComponent from "./DropDownComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 
+import useAppBadge from "../hooks/useAppBadge";
+
 import "./header.module.css";
 
 const geoCage = import.meta.env.VITE_GEO_CAGE_KEY;
-
+const apiKey = import.meta.env.VITE_OPEN_WEATHER_KEY;
 interface CityCoordinates {
   lat: number;
   lon: number;
@@ -22,17 +24,18 @@ const Header = ({ handleData }: any) => {
   const [cityName, setCityName] = useState<string>("");
   const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [cityCoordinates, setCityCoordinates] = useState<CityCoordinates>();
+  const [setBadge, clearBadge, setTemperature] = useAppBadge();
 
   const handleDropDownClick = () => {
     dropDownClicked ? setDropDownClicked(false) : setDropDownClicked(true);
     dropDownClicked ? setDropDownVisible(true) : setDropDownVisible(false);
     setForecastButtonClicked(true);
-  };  
+  };
 
   const handleCityNameChange = (city: string) => {
     setCityName(city);
     setInitialLoad(false);
-  };  
+  };
 
   const handleCityCoordinates = (coordinates: CityCoordinates) => {
     setCityCoordinates(coordinates);
@@ -44,7 +47,7 @@ const Header = ({ handleData }: any) => {
     setForecastButtonClicked(false);
   };
 
-  
+
   useEffect(() => {
     if (initialLoad && cityName === "") {
       if ("geolocation" in navigator) {
@@ -61,19 +64,29 @@ const Header = ({ handleData }: any) => {
               .then((response) => response.json())
               .then((data) => {
                 const city = data.results[0].components.city;
+                fetch(
+                  `https://api.openweathermap.org/data/2.5/weather?lat=${userCoordinates.lat}&lon=${userCoordinates?.lon}&appid=${apiKey}&units=metric`
+                ).then((response) => response.json())
+                  .then((data) => {
+                    setTemperature(data?.main?.temp);
+                  })
                 setCityName(city);
                 setInitialLoad(false);
+                setBadge();
               })
               .catch((error) => {
                 console.error("Error reverse geocoding:", error);
+                clearBadge();
               });
           },
           (error) => {
             console.error("Error getting user coordinates:", error);
+            clearBadge();
           }
         );
       } else {
         console.error("Geolocation is not supported in this browser.");
+        clearBadge();
       }
     }
   }, [initialLoad, cityName]);
@@ -81,9 +94,6 @@ const Header = ({ handleData }: any) => {
   useEffect(() => {
     handleData(forecastButtonClicked, cityName, cityCoordinates, initialLoad);
   }, [cityName, cityCoordinates, initialLoad]);
-
-  console.log(cityName);
-  
 
   return (
     <>
@@ -118,7 +128,7 @@ const Header = ({ handleData }: any) => {
               <>
                 <h1 className="text-white text-center text-2xl subpixel-antialiased font-medium md:text-3xl">
                   Choose a city{" "}
-                  <button 
+                  <button
                     onClick={handleDropDownClick}
                     aria-label={dropDownClicked ? 'Collapse dropdown' : 'Expand dropdown'}
                     role="button"
