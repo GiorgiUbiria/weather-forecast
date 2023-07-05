@@ -25,6 +25,7 @@ const Header = ({ handleData }: any) => {
   const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [cityCoordinates, setCityCoordinates] = useState<CityCoordinates>();
   const [setBadge, clearBadge, setTemperature] = useAppBadge();
+  const [cityTemp, setCityTemp] = useState<number>();
 
   const handleDropDownClick = () => {
     dropDownClicked ? setDropDownClicked(false) : setDropDownClicked(true);
@@ -47,6 +48,27 @@ const Header = ({ handleData }: any) => {
     setForecastButtonClicked(false);
   };
 
+  const sendNotification = () => {
+    setInterval(() => {
+      Notification.requestPermission().then((perm) => {
+        if (perm === "granted") {
+          const notif = new Notification(`Temperature in ${cityName} is ${cityTemp}`, {
+            body: "Check the app for the 5 days forecast",
+            tag: "Temperature check",
+            icon: "main-logo.png",
+          });
+
+          notif.addEventListener("error", (e) => {
+            console.error(e);
+          });
+
+          setTimeout(() => {
+            notif.close();
+          }, 5000);
+        }
+      });
+    }, 10000);
+  };
 
   useEffect(() => {
     if (initialLoad && cityName === "") {
@@ -69,6 +91,7 @@ const Header = ({ handleData }: any) => {
                 ).then((response) => response.json())
                   .then((data) => {
                     setTemperature(data?.main?.temp);
+                    setCityTemp(data?.main?.temp);
                   })
                 setCityName(city);
                 setInitialLoad(false);
@@ -94,6 +117,10 @@ const Header = ({ handleData }: any) => {
   useEffect(() => {
     handleData(forecastButtonClicked, cityName, cityCoordinates, initialLoad);
   }, [cityName, cityCoordinates, initialLoad]);
+
+  useEffect(() => {
+    sendNotification();
+  }, []);
 
   return (
     <>

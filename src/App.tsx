@@ -101,7 +101,7 @@ function App() {
     setForecastButtonClicked(clicked);
     setCityCoordinates(coordinates);
     setInitialLoad(initialLoad);
-  };  
+  };
 
   const handleShowForecastButton = () => {
     setForecastButtonClicked(true);
@@ -112,30 +112,30 @@ function App() {
       <div className="App flex items-center flex-col">
         <Particles options={options} init={particlesInit} />
         <Suspense fallback={<div>Loading...</div>}>
-            <>
-              <Header handleData={handleDataFromHeader} />
-              {cityCoordinates && (
-                <>
-                  <WeatherInfo cityCoordinates={cityCoordinates} apiKey={apiKey} />
-                  <div className="flex justify-center">
-                    {cityName !== "" ? (
-                      <button
-                        className="text-white text-xl subpixel-antialiased font-medium border rounded-sm p-1 mt-2 hover:scale-105 w-72 sm:w-96 sm:text-3xl sm:border-2 sm:rounded-md sm:p-2 sm:mt-6"
-                        onClick={handleShowForecastButton}
-                      >
-                        See 5-day Forecast
-                      </button>
-                    ) : null}
-                  </div>
-                  {forecastButtonClicked && (
-                    <FiveDayForecast
-                      cityCoordinates={cityCoordinates}
-                      apiKey={apiKey}
-                    />
-                  )}
-                </>
-              )}
-            </>
+          <>
+            <Header handleData={handleDataFromHeader} />
+            {cityCoordinates && (
+              <>
+                <WeatherInfo cityCoordinates={cityCoordinates} apiKey={apiKey} />
+                <div className="flex justify-center">
+                  {cityName !== "" ? (
+                    <button
+                      className="text-white text-xl subpixel-antialiased font-medium border rounded-sm p-1 mt-2 hover:scale-105 w-72 sm:w-96 sm:text-3xl sm:border-2 sm:rounded-md sm:p-2 sm:mt-6"
+                      onClick={handleShowForecastButton}
+                    >
+                      See 5-day Forecast
+                    </button>
+                  ) : null}
+                </div>
+                {forecastButtonClicked && (
+                  <FiveDayForecast
+                    cityCoordinates={cityCoordinates}
+                    apiKey={apiKey}
+                  />
+                )}
+              </>
+            )}
+          </>
         </Suspense>
       </div>
     </QueryClientProvider>
