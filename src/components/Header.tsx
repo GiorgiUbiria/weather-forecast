@@ -4,7 +4,6 @@ import DropDownComponent from "./DropDownComponent";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
-import addNotification from 'react-push-notification';
 
 import useAppBadge from "../hooks/useAppBadge";
 
@@ -49,20 +48,6 @@ const Header = ({ handleData }: any) => {
     clicked ? setDropDownClicked(true) : setDropDownClicked(false);
     setForecastButtonClicked(false);
   };
-
-  const sendNotification = () => {
-    addNotification({
-      title: `The temperatrue in ${cityName} is ${cityTemp}`,
-      subtitle: `Check 5-day forecast in ${cityName} using our application.`,
-      message: 'Good Luck',
-      theme: 'darkblue',
-      native: true
-    });
-  };
-
-  sendNotification();
-
-  setInterval(sendNotification, 10000);
 
   useEffect(() => {
     if (initialLoad && cityName === "") {
