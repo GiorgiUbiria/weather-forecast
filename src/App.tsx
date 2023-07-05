@@ -2,7 +2,6 @@ import { useCallback, useState, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Particles from "react-particles";
 import { loadFull } from "tsparticles";
-import { Notifications } from 'react-push-notification';
 import { ISourceOptions } from "tsparticles-engine";
 
 import WeatherInfo from "./components/WeatherInfo";
@@ -111,7 +110,6 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="App flex items-center flex-col">
-        <Notifications />
         <Particles options={options} init={particlesInit} />
         <Suspense fallback={<div>Loading...</div>}>
           <>
