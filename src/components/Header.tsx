@@ -4,8 +4,10 @@ import DropDownComponent from "./DropDownComponent";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import addNotification from 'react-push-notification';
 
 import useAppBadge from "../hooks/useAppBadge";
+
 
 import "./header.module.css";
 
@@ -49,26 +51,18 @@ const Header = ({ handleData }: any) => {
   };
 
   const sendNotification = () => {
-    setInterval(() => {
-      Notification.requestPermission().then((perm) => {
-        if (perm === "granted") {
-          const notif = new Notification(`Temperature in ${cityName} is ${cityTemp}`, {
-            body: "Check the app for the 5 days forecast",
-            tag: "Temperature check",
-            icon: "main-logo.png",
-          });
-
-          notif.addEventListener("error", (e) => {
-            console.error(e);
-          });
-
-          setTimeout(() => {
-            notif.close();
-          }, 5000);
-        }
-      });
-    }, 10000);
+    addNotification({
+      title: `The temperatrue in ${cityName} is ${cityTemp}`,
+      subtitle: `Check 5-day forecast in ${cityName} using our application.`,
+      message: 'Good Luck',
+      theme: 'darkblue',
+      native: true
+    });
   };
+
+  sendNotification();
+
+  setInterval(sendNotification, 10000);
 
   useEffect(() => {
     if (initialLoad && cityName === "") {
@@ -117,10 +111,6 @@ const Header = ({ handleData }: any) => {
   useEffect(() => {
     handleData(forecastButtonClicked, cityName, cityCoordinates, initialLoad);
   }, [cityName, cityCoordinates, initialLoad]);
-
-  useEffect(() => {
-    sendNotification();
-  }, []);
 
   return (
     <>
